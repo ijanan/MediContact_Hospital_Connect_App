@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "447517173267",
+    "project_id": "medicontact-app",
+    "storage_bucket": "medicontact-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447517173267:android:1e034f800e99b5f40fc1e6",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCbWJU3qKczPor-o1ApIHN1FMKVDJQr54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
