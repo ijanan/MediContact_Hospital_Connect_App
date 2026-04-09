@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'book_appointment_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -24,7 +25,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  String get _currentUserId => FirebaseAuth.instance.currentUser?.uid ?? 'user123';
+  String get _currentUserId =>
+      FirebaseAuth.instance.currentUser?.uid ?? 'user123';
   String get _currentUserLabel =>
       FirebaseAuth.instance.currentUser?.email?.split('@').first ?? 'User';
 
@@ -32,9 +34,9 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget _sectionHeader(String title, {IconData? icon}) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w800,
-        );
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800);
 
     return Row(
       children: [
@@ -89,7 +91,7 @@ class HomeScreenState extends State<HomeScreen> {
                       subtitle,
                       style: TextStyle(color: foreground.withAlpha(200)),
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),
@@ -135,7 +137,9 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     final firstAppointment = appointments.first;
-    final formattedDate = DateFormat('EEE, dd MMM').format(firstAppointment.date);
+    final formattedDate = DateFormat(
+      'EEE, dd MMM',
+    ).format(firstAppointment.date);
     final formattedTime = _formatAppointmentTime(firstAppointment.time);
 
     return Card(
@@ -157,7 +161,10 @@ class HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                Icon(Icons.chat_bubble_outline, color: colorScheme.onPrimaryContainer),
+                Icon(
+                  Icons.chat_bubble_outline,
+                  color: colorScheme.onPrimaryContainer,
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -199,7 +206,11 @@ class HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.calendar_month, size: 18, color: colorScheme.onPrimaryContainer),
+                Icon(
+                  Icons.calendar_month,
+                  size: 18,
+                  color: colorScheme.onPrimaryContainer,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -207,7 +218,11 @@ class HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(color: colorScheme.onPrimaryContainer),
                   ),
                 ),
-                Icon(Icons.access_time, size: 18, color: colorScheme.onPrimaryContainer),
+                Icon(
+                  Icons.access_time,
+                  size: 18,
+                  color: colorScheme.onPrimaryContainer,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   formattedTime,
@@ -225,12 +240,36 @@ class HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     final services = <({IconData icon, String label, Widget page})>[
-      (icon: Icons.calendar_month, label: 'Book Appointment', page: const BookAppointmentScreen()),
-      (icon: Icons.info_outline, label: 'Doctor Information', page: DoctorInformationScreen()),
-      (icon: Icons.local_hospital_outlined, label: 'Hospitals', page: const HospitalsScreen()),
-      (icon: Icons.health_and_safety_outlined, label: 'Doctors Specialty', page: const DoctorsSpecialtyScreen()),
-      (icon: Icons.contact_mail_outlined, label: 'Diagnostics', page: const DiagnosticsScreen()),
-      (icon: Icons.local_pharmacy_outlined, label: 'Prescriptions', page: const PrescriptionsScreen()),
+      (
+        icon: Icons.calendar_month,
+        label: 'Book Appointment',
+        page: const BookAppointmentScreen(),
+      ),
+      (
+        icon: Icons.info_outline,
+        label: 'Doctor Information',
+        page: DoctorInformationScreen(),
+      ),
+      (
+        icon: Icons.local_hospital_outlined,
+        label: 'Hospitals',
+        page: const HospitalsScreen(),
+      ),
+      (
+        icon: Icons.health_and_safety_outlined,
+        label: 'Doctors Specialty',
+        page: const DoctorsSpecialtyScreen(),
+      ),
+      (
+        icon: Icons.contact_mail_outlined,
+        label: 'Diagnostics',
+        page: const DiagnosticsScreen(),
+      ),
+      (
+        icon: Icons.local_pharmacy_outlined,
+        label: 'Prescriptions',
+        page: const PrescriptionsScreen(),
+      ),
     ];
 
     return Card(
@@ -269,7 +308,9 @@ class HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: colorScheme.outlineVariant.withAlpha(120)),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withAlpha(120),
+                        ),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +322,11 @@ class HomeScreenState extends State<HomeScreen> {
                               color: colorScheme.primary.withAlpha(20),
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            child: Icon(item.icon, size: 24, color: colorScheme.primary),
+                            child: Icon(
+                              item.icon,
+                              size: 24,
+                              color: colorScheme.primary,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -346,7 +391,9 @@ class HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 4),
                   Text(
                     formattedTime,
-                    style: TextStyle(color: colorScheme.onSecondaryContainer.withAlpha(220)),
+                    style: TextStyle(
+                      color: colorScheme.onSecondaryContainer.withAlpha(220),
+                    ),
                   ),
                 ],
               ),
@@ -370,12 +417,10 @@ class HomeScreenState extends State<HomeScreen> {
       } else if (_selectedBottomIndex == 2) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const ProfileScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
         );
       }
-     });
+    });
   }
 
   @override
@@ -412,9 +457,9 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               userName,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -427,14 +472,13 @@ class HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
                 gradient: LinearGradient(
-                  colors: [
-                    colorScheme.primaryContainer,
-                    colorScheme.surface,
-                  ],
+                  colors: [colorScheme.primaryContainer, colorScheme.surface],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                border: Border.all(color: colorScheme.outlineVariant.withAlpha(120)),
+                border: Border.all(
+                  color: colorScheme.outlineVariant.withAlpha(120),
+                ),
               ),
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -446,7 +490,10 @@ class HomeScreenState extends State<HomeScreen> {
                       color: colorScheme.primary.withAlpha(24),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Icon(Icons.favorite_outline, color: colorScheme.primary),
+                    child: Icon(
+                      Icons.favorite_outline,
+                      color: colorScheme.primary,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -455,17 +502,16 @@ class HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           'Your health, connected',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           'Appointments, hospitals, diagnostics, and more.',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: colorScheme.onSurface.withAlpha(200)),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: colorScheme.onSurface.withAlpha(200),
+                              ),
                         ),
                       ],
                     ),
@@ -486,7 +532,9 @@ class HomeScreenState extends State<HomeScreen> {
                   return _infoCard(
                     icon: Icons.cloud_off,
                     title: 'Appointments unavailable',
-                    subtitle: kDebugMode ? '${snapshot.error}' : 'Please try again later.',
+                    subtitle: kDebugMode
+                        ? '${snapshot.error}'
+                        : 'Please try again later.',
                     background: colorScheme.errorContainer,
                     foreground: colorScheme.onErrorContainer,
                   );
@@ -513,8 +561,14 @@ class HomeScreenState extends State<HomeScreen> {
         onDestinationSelected: _onItemTapped,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.newspaper_outlined), label: 'News'),
-          NavigationDestination(icon: Icon(Icons.account_circle_outlined), label: 'Profile'),
+          NavigationDestination(
+            icon: Icon(Icons.newspaper_outlined),
+            label: 'News',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Profile',
+          ),
         ],
       ),
     );

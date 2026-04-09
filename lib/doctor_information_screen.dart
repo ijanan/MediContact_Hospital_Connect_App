@@ -22,7 +22,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       name: "Dr. Mamun Mostafi",
       specialty: "Cardiologist",
       hospital: "Dhaka Medical Hospital",
-      
+
       availability: ["9 AM - 5 PM"],
       imageUrl: "assets/images/user_placeholder.png",
     ),
@@ -31,7 +31,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       name: "Dr. Md. Abdul Wahab Khan",
       specialty: "Neurologist",
       hospital: "Apollo Hospital",
-      
+
       availability: ["10 AM-6 PM"],
       imageUrl: "assets/images/user_placeholder.png",
     ),
@@ -40,7 +40,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       name: "Dr. Imtiaz Faruk",
       specialty: "Orthopedist",
       hospital: "Square Hospital",
-      
+
       availability: ["8 AM - 4 PM"],
       imageUrl: "assets/images/user_placeholder.png",
     ),
@@ -49,7 +49,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       name: "Dr. Md. Sahbub Alam",
       specialty: "Pediatrician",
       hospital: "United Hospital",
-      
+
       availability: ["11 AM - 7 PM"],
       imageUrl: "assets/images/user_placeholder.png",
     ),
@@ -119,9 +119,11 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
   void _filterDoctors(String query) {
     setState(() {
       _filteredDoctors = _doctors
-          .where((doctor) =>
-              doctor.name.toLowerCase().contains(query.toLowerCase()) ||
-              doctor.specialty.toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (doctor) =>
+                doctor.name.toLowerCase().contains(query.toLowerCase()) ||
+                doctor.specialty.toLowerCase().contains(query.toLowerCase()),
+          )
           .toList();
     });
   }
@@ -129,10 +131,12 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
   void _filterHospitals(String query) {
     setState(() {
       _filteredHospitals = _hospitals
-          .where((hospital) => (hospital['name'] ?? '')
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+          .where(
+            (hospital) => (hospital['name'] ?? '')
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()),
+          )
           .toList();
     });
   }
@@ -189,9 +193,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
         decoration: InputDecoration(
           hintText: 'Search Specialist',
           prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
     );
@@ -279,18 +281,24 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
             ),
             child: Row(
               children: [
-                 Padding(
+                Padding(
                   padding: EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    backgroundImage: doctor.imageUrl.isNotEmpty && doctor.imageUrl.startsWith('assets/images')
-                    ? AssetImage(doctor.imageUrl) 
-
-                    : const AssetImage('assets/images/user_placeholder.png'),
+                    backgroundImage:
+                        doctor.imageUrl.isNotEmpty &&
+                            doctor.imageUrl.startsWith('assets/images')
+                        ? AssetImage(doctor.imageUrl)
+                        : const AssetImage(
+                            'assets/images/user_placeholder.png',
+                          ),
                   ),
                 ),
 
                 Expanded(
-                  child: Text(doctor.name, style: const TextStyle(fontSize: 16)),
+                  child: Text(
+                    doctor.name,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -299,7 +307,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  BookAppointmentScreen(),
+                          builder: (context) => BookAppointmentScreen(),
                         ),
                       );
                     },
@@ -340,12 +348,16 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
                 const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    backgroundImage:
-                        AssetImage('assets/images/hospital_placeholder.png'),
+                    backgroundImage: AssetImage(
+                      'assets/images/hospital_placeholder.png',
+                    ),
                   ),
                 ),
                 Expanded(
-                  child: Text(hospitalName, style: const TextStyle(fontSize: 16)),
+                  child: Text(
+                    hospitalName,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -377,9 +389,13 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper_outlined), label: 'News Feed'),
+          icon: Icon(Icons.newspaper_outlined),
+          label: 'News Feed',
+        ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle), label: 'Profile'),
+          icon: Icon(Icons.account_circle),
+          label: 'Profile',
+        ),
       ],
       currentIndex: _selectedBottomIndex,
       selectedItemColor: const Color(0xFF9A75F9),

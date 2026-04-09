@@ -34,7 +34,10 @@ class DatabaseService {
       );
 
       // Save the appointment to Firestore
-      await _firestore.collection('appointments').doc(appointmentId).set(appointment.toFirestore());
+      await _firestore
+          .collection('appointments')
+          .doc(appointmentId)
+          .set(appointment.toFirestore());
 
       return appointmentId; // Return the generated appointmentId
     } catch (e) {
@@ -65,7 +68,10 @@ class DatabaseService {
   // Save hospital to Firestore
   Future<void> saveHospital(Hospital hospital) async {
     try {
-      await _firestore.collection('hospitals').doc(hospital.hospitalId).set(hospital.toFirestore());
+      await _firestore
+          .collection('hospitals')
+          .doc(hospital.hospitalId)
+          .set(hospital.toFirestore());
     } catch (e) {
       print("Error saving hospital: $e");
     }
@@ -76,7 +82,9 @@ class DatabaseService {
     try {
       QuerySnapshot snapshot = await _firestore.collection('hospitals').get();
       List<Hospital> hospitals = snapshot.docs
-          .map((doc) => Hospital.fromFirestore(doc.data() as Map<String, dynamic>))
+          .map(
+            (doc) => Hospital.fromFirestore(doc.data() as Map<String, dynamic>),
+          )
           .toList();
 
       return hospitals;
@@ -90,7 +98,11 @@ class DatabaseService {
   Future<List<Doctor>> fetchDoctors() async {
     try {
       QuerySnapshot snapshot = await _firestore.collection('doctors').get();
-      List<Doctor> doctors = snapshot.docs.map((doc) => Doctor.fromFirestore(doc.data() as Map<String, dynamic>)).toList();
+      List<Doctor> doctors = snapshot.docs
+          .map(
+            (doc) => Doctor.fromFirestore(doc.data() as Map<String, dynamic>),
+          )
+          .toList();
 
       return doctors;
     } catch (e) {
@@ -114,23 +126,23 @@ class DatabaseService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-      final now = DateTime.now();
+          final now = DateTime.now();
 
-      final upcoming = <Appointment>[];
-      for (final doc in snapshot.docs) {
-        try {
-          final appointment = Appointment.fromFirestore(doc.data());
-          if (!appointment.date.isBefore(now)) {
-            upcoming.add(appointment);
+          final upcoming = <Appointment>[];
+          for (final doc in snapshot.docs) {
+            try {
+              final appointment = Appointment.fromFirestore(doc.data());
+              if (!appointment.date.isBefore(now)) {
+                upcoming.add(appointment);
+              }
+            } catch (e) {
+              // Skip malformed documents instead of breaking the whole stream.
+              print('Error mapping appointment doc ${doc.id}: $e');
+            }
           }
-        } catch (e) {
-          // Skip malformed documents instead of breaking the whole stream.
-          print('Error mapping appointment doc ${doc.id}: $e');
-        }
-      }
 
-      upcoming.sort((a, b) => a.date.compareTo(b.date));
-      return upcoming;
-    });
+          upcoming.sort((a, b) => a.date.compareTo(b.date));
+          return upcoming;
+        });
   }
 }

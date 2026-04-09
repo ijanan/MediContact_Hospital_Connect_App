@@ -6,16 +6,45 @@ import 'package:myapp/models/hospital.dart';
 import 'package:myapp/models/doctor.dart';
 
 List<Doctor> placeholderDoctors = [
-  Doctor(doctorId: 'd1', name: 'Dr. Mamun Mostafi', specialty: 'Cardiology', hospital: 'City Hospital', availability: ['9am-5pm'], imageUrl: 'assets/images/user_placeholder.png'),
-  Doctor(doctorId: 'd2', name: 'Dr. Md. Abdul Wahab Khan', specialty: 'Neurology', hospital: 'General Hospital', availability: ['10am-6pm'], imageUrl: 'assets/images/user_placeholder.png'),
-  Doctor(doctorId: 'd3', name: 'Dr. Imtiaz Faruk', specialty: 'Orthopedics', hospital: 'Specialized Hospital', availability: ['8am-4pm'], imageUrl: 'assets/images/user_placeholder.png'),
-  Doctor(doctorId: 'd4', name: 'Dr. Md. Sahbub Alam', specialty: 'Dermatology', hospital: 'Skin Care Clinic', availability: ['11am-7pm'], imageUrl: 'assets/images/user_placeholder.png'),
+  Doctor(
+    doctorId: 'd1',
+    name: 'Dr. Mamun Mostafi',
+    specialty: 'Cardiology',
+    hospital: 'City Hospital',
+    availability: ['9am-5pm'],
+    imageUrl: 'assets/images/user_placeholder.png',
+  ),
+  Doctor(
+    doctorId: 'd2',
+    name: 'Dr. Md. Abdul Wahab Khan',
+    specialty: 'Neurology',
+    hospital: 'General Hospital',
+    availability: ['10am-6pm'],
+    imageUrl: 'assets/images/user_placeholder.png',
+  ),
+  Doctor(
+    doctorId: 'd3',
+    name: 'Dr. Imtiaz Faruk',
+    specialty: 'Orthopedics',
+    hospital: 'Specialized Hospital',
+    availability: ['8am-4pm'],
+    imageUrl: 'assets/images/user_placeholder.png',
+  ),
+  Doctor(
+    doctorId: 'd4',
+    name: 'Dr. Md. Sahbub Alam',
+    specialty: 'Dermatology',
+    hospital: 'Skin Care Clinic',
+    availability: ['11am-7pm'],
+    imageUrl: 'assets/images/user_placeholder.png',
+  ),
 ];
 
 // Hospital Detail Screen
 class HospitalDetailsScreen extends StatefulWidget {
   final Hospital hospital;
-  const HospitalDetailsScreen({Key? key, required this.hospital}) : super(key: key);
+  const HospitalDetailsScreen({Key? key, required this.hospital})
+    : super(key: key);
 
   @override
   HospitalDetailsScreenState createState() => HospitalDetailsScreenState();
@@ -71,14 +100,18 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 decoration: BoxDecoration(
-                  color: _selectedSegment == segment ? const Color(0xFF9A75F9) : Colors.transparent,
+                  color: _selectedSegment == segment
+                      ? const Color(0xFF9A75F9)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Center(
                   child: Text(
                     segment,
                     style: TextStyle(
-                      color: _selectedSegment == segment ? Colors.white : const Color(0xFF9A75F9),
+                      color: _selectedSegment == segment
+                          ? Colors.white
+                          : const Color(0xFF9A75F9),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -101,11 +134,11 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
           });
         },
         decoration: InputDecoration(
-          hintText: _selectedSegment == "Doctor" ? "Search Specialist" : "Search Hospital",
+          hintText: _selectedSegment == "Doctor"
+              ? "Search Specialist"
+              : "Search Hospital",
           prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
       ),
     );
@@ -113,13 +146,24 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
 
   List<dynamic> _getFilteredList() {
     if (_selectedSegment == 'Hospital') {
-      return placeholderHospitals.where((hospital) =>
-          hospital.name.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+      return placeholderHospitals
+          .where(
+            (hospital) => hospital.name.toLowerCase().contains(
+              _searchQuery.toLowerCase(),
+            ),
+          )
+          .toList();
     } else {
       return placeholderDoctors
-          .where((doctor) =>
-              doctor.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              doctor.specialty.toLowerCase().contains(_searchQuery.toLowerCase()))
+          .where(
+            (doctor) =>
+                doctor.name.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ||
+                doctor.specialty.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ),
+          )
           .toList();
     }
   }
@@ -149,12 +193,23 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
               fit: BoxFit.cover,
             ),
             const SizedBox(width: 10),
-            Expanded(child: Text(hospital.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            Expanded(
+              child: Text(
+                hospital.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             TextButton(
               onPressed: () {
                 // Implement navigation to hospital details screen
               },
-              child: const Text('More info', style: TextStyle(color: Color(0xFF9A75F9))),
+              child: const Text(
+                'More info',
+                style: TextStyle(color: Color(0xFF9A75F9)),
+              ),
             ),
           ],
         ),
@@ -178,12 +233,23 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
               fit: BoxFit.cover,
             ),
             const SizedBox(width: 10),
-            Expanded(child: Text(doctor.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            Expanded(
+              child: Text(
+                doctor.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             TextButton(
               onPressed: () {
                 // Implement navigation to doctor details screen
               },
-              child: const Text('More info', style: TextStyle(color: Color(0xFF9A75F9))),
+              child: const Text(
+                'More info',
+                style: TextStyle(color: Color(0xFF9A75F9)),
+              ),
             ),
           ],
         ),
@@ -195,7 +261,10 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Information', style: TextStyle(color: Color(0xFF9A75F9))),
+        title: const Text(
+          'Information',
+          style: TextStyle(color: Color(0xFF9A75F9)),
+        ),
         backgroundColor: Colors.white,
         elevation: 2,
         leading: IconButton(
@@ -234,7 +303,10 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
             icon: Icon(Icons.newspaper_outlined),
             label: 'News Feed',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Profile',
+          ),
         ],
         currentIndex: _selectedBottomIndex,
         selectedItemColor: const Color(0xFF9A75F9),
