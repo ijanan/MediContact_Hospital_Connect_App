@@ -101,30 +101,36 @@ class DatabaseService {
 
   // Fetch upcoming appointments for a specific user
   Stream<List<Appointment>> getUpcomingAppointments(String userId) {
+    if (userId.trim().isEmpty) {
+      return const Stream<List<Appointment>>.empty();
+    }
+
+    // Note: We intentionally avoid a compound Firestore query like:
+    //   where(userId == ...) + where(date >= now) + orderBy(date)
+    // because it requires a composite index in many Firestore projects.
+    // Instead, we fetch the user's appointments and filter/sort in Dart.
     return _firestore
         .collection('appointments')
         .where('userId', isEqualTo: userId)
-        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()))
-        .orderBy('date')
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            try {
-              return Appointment.fromFirestore(doc.data());
-            } catch (e) {
-              print('Error mapping document: $e');
-              return Appointment(
-                appointmentId: "",
-                doctorId: "",
-                userId: "",
-                date: DateTime.now(),
-                time: "",
-                specialty: "",
-                hospital: "",
-                status: "",
-              );
-            }
-          }).toList();
-        });
+      final now = DateTime.now();
+
+      final upcoming = <Appointment>[];
+      for (final doc in snapshot.docs) {
+        try {
+          final appointment = Appointment.fromFirestore(doc.data());
+          if (!appointment.date.isBefore(now)) {
+            upcoming.add(appointment);
+          }
+        } catch (e) {
+          // Skip malformed documents instead of breaking the whole stream.
+          print('Error mapping appointment doc ${doc.id}: $e');
+        }
+      }
+
+      upcoming.sort((a, b) => a.date.compareTo(b.date));
+      return upcoming;
+    });
   }
 }

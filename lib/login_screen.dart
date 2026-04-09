@@ -95,7 +95,7 @@ class LoginScreenState extends State<LoginScreen> {
                         left: 20,
                           child: ShaderMask(
                             shaderCallback: (bounds) => const LinearGradient(
-                              colors: [Colors.white],
+                              colors: [Colors.white, Colors.white],
                             ).createShader(bounds),
                             child: const Text(
                           'Welcome to',

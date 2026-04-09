@@ -3,7 +3,6 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services") version "4.4.2" apply false
     id("com.google.gms.google-services")
 }
 
@@ -43,6 +42,14 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// Workaround: When this project lives under OneDrive, some Flutter build artifacts
+// (like build/.../.last_build_id) may be created as a reparse point (not a regular file).
+// Gradle 8+ then fails while snapshotting task outputs. Disable state tracking for
+// the Flutter build tasks as recommended by Gradle in the error message.
+tasks.matching { it.name.startsWith("compileFlutterBuild") }.configureEach {
+    doNotTrackState("OneDrive reparse-point build artifacts are not snapshot-friendly")
 }
 dependencies {
 

@@ -6,10 +6,10 @@ import 'package:myapp/models/hospital.dart';
 import 'package:myapp/models/doctor.dart';
 
 List<Doctor> placeholderDoctors = [
-  Doctor(doctorId: 'd1', name: 'Dr. Mamun Mostafi', specialty: 'Cardiology', hospital: 'City Hospital', availability: ['9am-5pm'], imageUrl: 'assets/images/doctor_placeholder.png'),
-  Doctor(doctorId: 'd2', name: 'Dr. Md. Abdul Wahab Khan', specialty: 'Neurology', hospital: 'General Hospital', availability: ['10am-6pm'], imageUrl: 'assets/images/doctor_placeholder.png'),
-  Doctor(doctorId: 'd3', name: 'Dr. Imtiaz Faruk', specialty: 'Orthopedics', hospital: 'Specialized Hospital', availability: ['8am-4pm'], imageUrl: 'assets/images/doctor_placeholder.png'),
-  Doctor(doctorId: 'd4', name: 'Dr. Md. Sahbub Alam', specialty: 'Dermatology', hospital: 'Skin Care Clinic', availability: ['11am-7pm'], imageUrl: 'assets/images/doctor_placeholder.png'),
+  Doctor(doctorId: 'd1', name: 'Dr. Mamun Mostafi', specialty: 'Cardiology', hospital: 'City Hospital', availability: ['9am-5pm'], imageUrl: 'assets/images/user_placeholder.png'),
+  Doctor(doctorId: 'd2', name: 'Dr. Md. Abdul Wahab Khan', specialty: 'Neurology', hospital: 'General Hospital', availability: ['10am-6pm'], imageUrl: 'assets/images/user_placeholder.png'),
+  Doctor(doctorId: 'd3', name: 'Dr. Imtiaz Faruk', specialty: 'Orthopedics', hospital: 'Specialized Hospital', availability: ['8am-4pm'], imageUrl: 'assets/images/user_placeholder.png'),
+  Doctor(doctorId: 'd4', name: 'Dr. Md. Sahbub Alam', specialty: 'Dermatology', hospital: 'Skin Care Clinic', availability: ['11am-7pm'], imageUrl: 'assets/images/user_placeholder.png'),
 ];
 
 // Hospital Detail Screen
@@ -208,7 +208,7 @@ class HospitalDetailsScreenState extends State<HospitalDetailsScreen> {
         children: [
           // Hero Image
           Image.asset(
-            'assets/images/doctor_placeholder.png',
+            'assets/images/hospital_placeholder.png',
             fit: BoxFit.cover,
             height: 250,
             width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:myapp/models/appointment.dart';
 import 'package:myapp/profile_screen.dart';
 import 'package:myapp/news_feed_screen.dart';
@@ -9,6 +10,7 @@ import 'doctors_specialty_screen.dart';
 import 'hospitals_screen.dart';
 import 'package:myapp/services/database_service.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'book_appointment_screen.dart';
 class HomeScreen extends StatefulWidget {
@@ -22,217 +24,335 @@ class HomeScreenState extends State<HomeScreen> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  // Placeholder for current user ID (replace with actual user ID)
-  final String currentUserId = "user123"; 
+  String get _currentUserId => FirebaseAuth.instance.currentUser?.uid ?? 'user123';
+  String get _currentUserLabel =>
+      FirebaseAuth.instance.currentUser?.email?.split('@').first ?? 'User';
 
-  Widget _upcomingSchedule(List<Appointment> appointments) {
-        
-    if (appointments.isEmpty) {
-      return Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF9A75F9),
-          borderRadius: BorderRadius.circular(10),
-        ),
+  static const String _userAvatarAsset = 'assets/images/user_placeholder.png';
+
+  Widget _sectionHeader(String title, {IconData? icon}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w800,
+        );
+
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(icon, color: colorScheme.primary),
+          const SizedBox(width: 8),
+        ],
+        Text(title, style: textStyle),
+      ],
+    );
+  }
+
+  Widget _infoCard({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required Color background,
+    required Color foreground,
+  }) {
+    return Card(
+      elevation: 0,
+      color: background,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: const Center(
-          child: Text(
-            'No upcoming appointments',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );    
-    }
-
-    // Assuming there's at least one appointment to display
-    Appointment firstAppointment = appointments.first;
-    DateFormat dateFormat = DateFormat('EEEE, dd MMMM');
-    String formattedDate = dateFormat.format(firstAppointment.date);
-    DateFormat timeFormat = DateFormat('hh:mm a');
-    DateTime parsedTime = DateTime.parse(firstAppointment.time);
-    String formattedTime = timeFormat.format(parsedTime);
-
-    return  Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF9A75F9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      padding: const EdgeInsets.all(16.0),
-      child:  Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-                const Text(
-                  'Upcoming schedule',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,                   
-                  ),
-                ),
-            const SizedBox(height: 10),
-            const CircleAvatar(
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-              radius: 30,
-            ),
-             Text(
-              'Dr. ${firstAppointment.doctorId}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,              
-              ),
-            ),
-             Text(
-              firstAppointment.specialty,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,              
-              ),
-            ),
-            
-            const SizedBox(height: 10),
             Container(
-              alignment: Alignment.centerRight,
-              child: const Icon(Icons.message, color: Colors.white),
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: foreground.withAlpha(24),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: foreground),
             ),
-            const Divider(color: Colors.white, thickness: 1.5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                 Row(
-                  children: [
-                    const Icon(Icons.calendar_month, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Text(
-                     formattedDate,                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ],), Row(
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.access_time, color: Colors.white),
-                  const SizedBox(width: 8),
-                Text(
-                  formattedTime,
-                   style: const TextStyle(color: Colors.white, fontSize: 14),
-                  )
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  if (subtitle != null && subtitle.trim().isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(color: foreground.withAlpha(200)),
+                    ),
+                  ]
                 ],
               ),
-            
-            ],
-          ),
-        ],
-      )
-      );
-    }
-
-  Widget _buildServiceBox() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          const BoxShadow(
-            color: Color.fromRGBO(128, 128, 128, 0.5),
-           spreadRadius: 1,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Wrap(// Wrap for responsive layout
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            _buildServiceCard(Icons.calendar_month, "Book Appointment"),
-            _buildServiceCard(Icons.info_outline, "Doctor Information"),
-            _buildServiceCard(Icons.local_hospital_outlined, "Hospitals"),
-            _buildServiceCard(Icons.health_and_safety_outlined, "Doctors Specialty"),
-            _buildServiceCard(Icons.contact_mail_outlined, "Diagnostics"),
-            _buildServiceCard(Icons.receipt_long_outlined, "Prescriptions"),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildServiceCard(IconData icon, String text) {
-    if (text == "Prescriptions") {
-      icon = Icons.local_pharmacy_outlined;
+  String _formatAppointmentTime(String timeRaw) {
+    final trimmed = timeRaw.trim();
+    if (trimmed.isEmpty) return '';
+
+    final parsedIso = DateTime.tryParse(trimmed);
+    if (parsedIso != null) {
+      return DateFormat('hh:mm a').format(parsedIso);
     }
-      
 
-   final Map<String, Widget> serviceRoutes = {
-    "Book Appointment": const BookAppointmentScreen(),
-    "Doctor Information":  DoctorInformationScreen(),
-      "Hospitals": const HospitalsScreen(),
-      "Doctors Specialty": const DoctorsSpecialtyScreen(),
-      "Diagnostics": const DiagnosticsScreen(),
-      "Prescriptions":  const PrescriptionsScreen(),
+    try {
+      final parsed24 = DateFormat.Hm().parseStrict(trimmed);
+      return DateFormat('hh:mm a').format(parsed24);
+    } catch (_) {}
 
+    try {
+      final parsed12 = DateFormat('hh:mm a').parseStrict(trimmed);
+      return DateFormat('hh:mm a').format(parsed12);
+    } catch (_) {}
 
-    };
-    return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => serviceRoutes[text]!,
-        ),
-      ).then((_) => setState(() {})),
-      child: Container(
-        width: 110,
-        height: 110,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF2F2F2),
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return trimmed;
+  }
+
+  Widget _upcomingSchedule(List<Appointment> appointments) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (appointments.isEmpty) {
+      return _infoCard(
+        icon: Icons.event_available,
+        title: 'No upcoming appointments',
+        subtitle: 'Book a visit to see it here.',
+        background: colorScheme.surfaceContainerHighest,
+        foreground: colorScheme.onSurface,
+      );
+    }
+
+    final firstAppointment = appointments.first;
+    final formattedDate = DateFormat('EEE, dd MMM').format(firstAppointment.date);
+    final formattedTime = _formatAppointmentTime(firstAppointment.time);
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.primaryContainer,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 34, color: const Color(0xFF9A75F9)),
-            const SizedBox(height: 10),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Upcoming appointment',
+                  style: TextStyle(
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Icon(Icons.chat_bubble_outline, color: colorScheme.onPrimaryContainer),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const CircleAvatar(
+                  backgroundImage: AssetImage(_userAvatarAsset),
+                  radius: 22,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Dr. ${firstAppointment.doctorId}',
+                        style: TextStyle(
+                          color: colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${firstAppointment.specialty}${firstAppointment.hospital.trim().isEmpty ? '' : ' • ${firstAppointment.hospital}'}',
+                        style: TextStyle(
+                          color: colorScheme.onPrimaryContainer.withAlpha(200),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Divider(color: colorScheme.onPrimaryContainer.withAlpha(80)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.calendar_month, size: 18, color: colorScheme.onPrimaryContainer),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    formattedDate,
+                    style: TextStyle(color: colorScheme.onPrimaryContainer),
+                  ),
+                ),
+                Icon(Icons.access_time, size: 18, color: colorScheme.onPrimaryContainer),
+                const SizedBox(width: 8),
+                Text(
+                  formattedTime,
+                  style: TextStyle(color: colorScheme.onPrimaryContainer),
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServiceSection() {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final services = <({IconData icon, String label, Widget page})>[
+      (icon: Icons.calendar_month, label: 'Book Appointment', page: const BookAppointmentScreen()),
+      (icon: Icons.info_outline, label: 'Doctor Information', page: DoctorInformationScreen()),
+      (icon: Icons.local_hospital_outlined, label: 'Hospitals', page: const HospitalsScreen()),
+      (icon: Icons.health_and_safety_outlined, label: 'Doctors Specialty', page: const DoctorsSpecialtyScreen()),
+      (icon: Icons.contact_mail_outlined, label: 'Diagnostics', page: const DiagnosticsScreen()),
+      (icon: Icons.local_pharmacy_outlined, label: 'Prescriptions', page: const PrescriptionsScreen()),
+    ];
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = constraints.maxWidth >= 600 ? 4 : 3;
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: services.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                // Make tiles a bit taller on smaller screens to avoid
+                // "Bottom overflowed by ... pixels".
+                childAspectRatio: constraints.maxWidth >= 600 ? 1.15 : 0.90,
+              ),
+              itemBuilder: (context, index) {
+                final item = services[index];
+                return Material(
+                  color: colorScheme.surface,
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => item.page),
+                    ).then((_) => setState(() {})),
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: colorScheme.outlineVariant.withAlpha(120)),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary.withAlpha(20),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(item.icon, size: 24, color: colorScheme.primary),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            item.label,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colorScheme.onSurface,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
   }
 
   Widget _calendarSection() {
-    String formattedTime;
-    DateTime now = DateTime.now();
-     String formattedDate = DateFormat('EEEE, MMMM d, y').format(now);
-     formattedTime = DateFormat('hh:mm a').format(now);
-    return Container(
-     width: double.infinity,
-     padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF9A75F9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final colorScheme = Theme.of(context).colorScheme;
+    final now = DateTime.now();
+    final formattedDate = DateFormat('EEEE, MMMM d, y').format(now);
+    final formattedTime = DateFormat('hh:mm a').format(now);
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.secondaryContainer,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
           children: [
-             Text(
-              formattedDate,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-           ),
-          ), 
-          Text(
-            formattedTime,
-            style: const TextStyle(fontSize: 16, color: Colors.white),
-          ),
-        ],
+            Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: colorScheme.onSecondaryContainer.withAlpha(24),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.today, color: colorScheme.onSecondaryContainer),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    formattedTime,
+                    style: TextStyle(color: colorScheme.onSecondaryContainer.withAlpha(220)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -260,96 +380,143 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const String userName = "User Name";
-    const String userImageUrl = 'lib/images/boy.png';    
+    final colorScheme = Theme.of(context).colorScheme;
+    final userName = _currentUserLabel;
     return Scaffold(
-          backgroundColor:  const Color.fromARGB(255, 247, 243, 243),
-          appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration:  const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 247, 243, 243),
-                Color.fromARGB(255, 247, 243, 243),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-       iconTheme: const IconThemeData(
-          color: Color(0xFF9A75F9),
-       ),
+      backgroundColor: colorScheme.surface,
+      appBar: AppBar(
         elevation: 0,
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        leadingWidth: 72,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
-          child:  CircleAvatar(
-            backgroundImage:  AssetImage(userImageUrl),
-            radius: 30,
+          child: CircleAvatar(
+            backgroundImage: const AssetImage(_userAvatarAsset),
+            backgroundColor: colorScheme.surfaceContainerHighest,
           ),
         ),
-       actions: const [
-            Padding(padding: EdgeInsets.only(right: 16),child: Icon(Icons.notifications_none, color: Color(0xFF9A75F9))),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
+          const SizedBox(width: 8),
         ],
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-             const Text(  
-                  'Welcome To MediConnect',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    
-                  ),
-                ),
+          children: [
             Text(
-              userName, 
-              style:   TextStyle(
-                color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold 
-              ),
+              'Welcome to MediConnect',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            Text(
+              userName,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
             ),
           ],
         ),
       ),
-          body: Padding(
+      body: SafeArea(
+        child: ListView(
           padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: <Widget>[
-                   StreamBuilder<List<Appointment>>(
-                    stream: _databaseService.getUpcomingAppointments(currentUserId),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return _upcomingSchedule([]); // Show empty state
-                      } else {
-                        return _upcomingSchedule(snapshot.data!);
-                      }
-                    },
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: LinearGradient(
+                  colors: [
+                    colorScheme.primaryContainer,
+                    colorScheme.surface,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border.all(color: colorScheme.outlineVariant.withAlpha(120)),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    height: 44,
+                    width: 44,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withAlpha(24),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(Icons.favorite_outline, color: colorScheme.primary),
                   ),
-                 const SizedBox(height: 20),
-                  _buildServiceBox(),
-              const SizedBox(height: 20),
-              _calendarSection(),
-              Container()
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.newspaper_outlined), label: 'News Feed'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), label: 'Profile'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Your health, connected',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Appointments, hospitals, diagnostics, and more.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: colorScheme.onSurface.withAlpha(200)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            StreamBuilder<List<Appointment>>(
+              stream: _databaseService.getUpcomingAppointments(_currentUserId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 110,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return _infoCard(
+                    icon: Icons.cloud_off,
+                    title: 'Appointments unavailable',
+                    subtitle: kDebugMode ? '${snapshot.error}' : 'Please try again later.',
+                    background: colorScheme.errorContainer,
+                    foreground: colorScheme.onErrorContainer,
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return _upcomingSchedule([]);
+                } else {
+                  return _upcomingSchedule(snapshot.data!);
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            _sectionHeader('Services', icon: Icons.grid_view_rounded),
+            const SizedBox(height: 12),
+            _buildServiceSection(),
+            const SizedBox(height: 16),
+            _sectionHeader('Today', icon: Icons.today_outlined),
+            const SizedBox(height: 12),
+            _calendarSection(),
           ],
-          currentIndex: _selectedBottomIndex,
-          selectedItemColor:  const Color(0xFF9A75F9),
-          onTap: _onItemTapped,
-    ));
+        ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedBottomIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.newspaper_outlined), label: 'News'),
+          NavigationDestination(icon: Icon(Icons.account_circle_outlined), label: 'Profile'),
+        ],
+      ),
+    );
   }
 }

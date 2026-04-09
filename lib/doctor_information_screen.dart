@@ -24,7 +24,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       hospital: "Dhaka Medical Hospital",
       
       availability: ["9 AM - 5 PM"],
-      imageUrl: "assets/images/doctor_placeholder.png",
+      imageUrl: "assets/images/user_placeholder.png",
     ),
     Doctor(
       doctorId: "2",
@@ -33,7 +33,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       hospital: "Apollo Hospital",
       
       availability: ["10 AM-6 PM"],
-      imageUrl: "assets/images/doctor_placeholder.png",
+      imageUrl: "assets/images/user_placeholder.png",
     ),
     Doctor(
       doctorId: "3",
@@ -42,7 +42,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       hospital: "Square Hospital",
       
       availability: ["8 AM - 4 PM"],
-      imageUrl: "assets/images/doctor_placeholder.png",
+      imageUrl: "assets/images/user_placeholder.png",
     ),
     Doctor(
       doctorId: "4",
@@ -51,7 +51,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       hospital: "United Hospital",
       
       availability: ["11 AM - 7 PM"],
-      imageUrl: "assets/images/doctor_placeholder.png",
+      imageUrl: "assets/images/user_placeholder.png",
     ),
   ];
 
@@ -169,7 +169,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/boy.png'),
+          image: AssetImage('assets/images/post_placeholder.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -285,7 +285,7 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
                     backgroundImage: doctor.imageUrl.isNotEmpty && doctor.imageUrl.startsWith('assets/images')
                     ? AssetImage(doctor.imageUrl) 
 
-                    : AssetImage('assets/images/doctor_placeholder.png'),
+                    : const AssetImage('assets/images/user_placeholder.png'),
                   ),
                 ),
 
