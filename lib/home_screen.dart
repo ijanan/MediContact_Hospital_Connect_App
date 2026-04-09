@@ -31,6 +31,8 @@ class HomeScreenState extends State<HomeScreen> {
       FirebaseAuth.instance.currentUser?.email?.split('@').first ?? 'User';
 
   static const String _userAvatarAsset = 'assets/images/user_placeholder.png';
+  static const String _animeAvatarUrl =
+      'https://i.pinimg.com/1200x/c1/4d/c6/c14dc680373ab26a0b1683ec2de820cc.jpg'; // Fixed high quality anime avatar
 
   Widget _sectionHeader(String title, {IconData? icon}) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -143,11 +145,16 @@ class HomeScreenState extends State<HomeScreen> {
     final formattedTime = _formatAppointmentTime(firstAppointment.time);
 
     return Card(
-      elevation: 0,
+      elevation: 6,
+      shadowColor: colorScheme.primary.withAlpha(40),
       color: colorScheme.primaryContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      surfaceTintColor: colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: colorScheme.primary.withAlpha(30), width: 1.5),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -171,10 +178,10 @@ class HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 const CircleAvatar(
-                  backgroundImage: AssetImage(_userAvatarAsset),
-                  radius: 22,
+                  backgroundImage: NetworkImage(_animeAvatarUrl),
+                  radius: 24,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,81 +281,110 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Card(
       elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final crossAxisCount = constraints.maxWidth >= 600 ? 4 : 3;
-            return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: services.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                // Make tiles a bit taller on smaller screens to avoid
-                // "Bottom overflowed by ... pixels".
-                childAspectRatio: constraints.maxWidth >= 600 ? 1.15 : 0.90,
-              ),
-              itemBuilder: (context, index) {
-                final item = services[index];
-                return Material(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(14),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => item.page),
-                    ).then((_) => setState(() {})),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant.withAlpha(120),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary.withAlpha(20),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(
-                              item.icon,
-                              size: 24,
-                              color: colorScheme.primary,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            item.label,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+      color: Colors.transparent,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = constraints.maxWidth >= 600 ? 4 : 3;
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: services.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              // Make tiles a bit taller on smaller screens to avoid
+              // "Bottom overflowed by ... pixels".
+              childAspectRatio: constraints.maxWidth >= 600 ? 1.15 : 0.85,
+            ),
+            itemBuilder: (context, index) {
+              final item = services[index];
+              return Material(
+                color: colorScheme.surfaceContainerHighest.withAlpha(80),
+                borderRadius: BorderRadius.circular(18),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  hoverColor: colorScheme.primary.withAlpha(20),
+                  highlightColor: colorScheme.primary.withAlpha(40),
+                  splashColor: colorScheme.primary.withAlpha(50),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => item.page),
+                  ).then((_) => setState(() {})),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          colorScheme.surface,
+                          colorScheme.surfaceContainerLowest,
                         ],
                       ),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withAlpha(100),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.shadow.withAlpha(15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 46,
+                          width: 46,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.primary.withAlpha(200),
+                                colorScheme.primary.withAlpha(120),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: colorScheme.primary.withAlpha(40),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            item.icon,
+                            size: 24,
+                            color: colorScheme.onPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          item.label,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colorScheme.onSurface.withAlpha(220),
+                            fontWeight: FontWeight.w700,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            );
-          },
-        ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -360,23 +396,46 @@ class HomeScreenState extends State<HomeScreen> {
     final formattedTime = DateFormat('hh:mm a').format(now);
 
     return Card(
-      elevation: 0,
-      color: colorScheme.secondaryContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      shadowColor: colorScheme.secondary.withAlpha(20),
+      color: colorScheme.surface,
+      surfaceTintColor: colorScheme.secondaryContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: colorScheme.secondaryContainer, width: 1.5),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
             Container(
-              height: 40,
-              width: 40,
+              height: 48,
+              width: 48,
               decoration: BoxDecoration(
-                color: colorScheme.onSecondaryContainer.withAlpha(24),
-                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    colorScheme.secondary,
+                    colorScheme.secondaryContainer,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.secondary.withAlpha(40),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                shape: BoxShape.circle,
               ),
-              child: Icon(Icons.today, color: colorScheme.onSecondaryContainer),
+              child: Icon(
+                Icons.today_rounded,
+                color: colorScheme.onSecondary,
+                size: 24,
+              ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,14 +444,16 @@ class HomeScreenState extends State<HomeScreen> {
                     formattedDate,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: colorScheme.onSecondaryContainer,
+                      fontSize: 16,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     formattedTime,
                     style: TextStyle(
-                      color: colorScheme.onSecondaryContainer.withAlpha(220),
+                      color: colorScheme.onSurface.withAlpha(160),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -437,7 +498,7 @@ class HomeScreenState extends State<HomeScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: CircleAvatar(
-            backgroundImage: const AssetImage(_userAvatarAsset),
+            backgroundImage: const NetworkImage(_animeAvatarUrl),
             backgroundColor: colorScheme.surfaceContainerHighest,
           ),
         ),
@@ -470,32 +531,55 @@ class HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(20),
                 gradient: LinearGradient(
-                  colors: [colorScheme.primaryContainer, colorScheme.surface],
+                  colors: [
+                    colorScheme.primaryContainer.withAlpha(220),
+                    colorScheme.surface,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.primary.withAlpha(20),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
                 border: Border.all(
-                  color: colorScheme.outlineVariant.withAlpha(120),
+                  color: colorScheme.primary.withAlpha(50),
+                  width: 1.5,
                 ),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(18),
               child: Row(
                 children: [
                   Container(
-                    height: 44,
-                    width: 44,
+                    height: 52,
+                    width: 52,
                     decoration: BoxDecoration(
-                      color: colorScheme.primary.withAlpha(24),
-                      borderRadius: BorderRadius.circular(14),
+                      gradient: LinearGradient(
+                        colors: [colorScheme.primary, colorScheme.secondary],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.primary.withAlpha(60),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Icon(
-                      Icons.favorite_outline,
-                      color: colorScheme.primary,
+                      Icons.healing_rounded,
+                      color: colorScheme.onPrimary,
+                      size: 28,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,15 +613,9 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 } else if (snapshot.hasError) {
-                  return _infoCard(
-                    icon: Icons.cloud_off,
-                    title: 'Appointments unavailable',
-                    subtitle: kDebugMode
-                        ? '${snapshot.error}'
-                        : 'Please try again later.',
-                    background: colorScheme.errorContainer,
-                    foreground: colorScheme.onErrorContainer,
-                  );
+                  return _upcomingSchedule(
+                    [],
+                  ); // Fallback to empty state on error instead of breaking the UI
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return _upcomingSchedule([]);
                 } else {
@@ -546,8 +624,8 @@ class HomeScreenState extends State<HomeScreen> {
               },
             ),
             const SizedBox(height: 16),
-            _sectionHeader('Services', icon: Icons.grid_view_rounded),
-            const SizedBox(height: 12),
+            _sectionHeader('Your Services', icon: Icons.apps_rounded),
+            const SizedBox(height: 16),
             _buildServiceSection(),
             const SizedBox(height: 16),
             _sectionHeader('Today', icon: Icons.today_outlined),
@@ -559,14 +637,22 @@ class HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedBottomIndex,
         onDestinationSelected: _onItemTapped,
+        animationDuration: const Duration(milliseconds: 400),
+        indicatorColor: colorScheme.primary.withAlpha(40),
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
           NavigationDestination(
             icon: Icon(Icons.newspaper_outlined),
+            selectedIcon: Icon(Icons.newspaper_rounded),
             label: 'News',
           ),
           NavigationDestination(
             icon: Icon(Icons.account_circle_outlined),
+            selectedIcon: Icon(Icons.account_circle_rounded),
             label: 'Profile',
           ),
         ],
