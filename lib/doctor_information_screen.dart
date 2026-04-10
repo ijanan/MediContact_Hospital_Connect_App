@@ -1,85 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/book_appointment_screen.dart';
 import 'package:myapp/models/doctor.dart';
-import 'package:myapp/home_screen.dart';
-import 'package:myapp/news_feed_screen.dart';
-import 'package:myapp/profile_screen.dart';
 
 class DoctorInformationScreen extends StatefulWidget {
+  const DoctorInformationScreen({super.key});
+
   @override
   State<DoctorInformationScreen> createState() =>
       _DoctorInformationScreenState();
 }
 
 class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
-  int _selectedBottomIndex = 0;
-  int _selectedSegment = 0; // 0 for Doctor, 1 for Hospital
+  int _selectedSegment = 0;
   final TextEditingController _searchController = TextEditingController();
 
   final List<Doctor> _doctors = [
     Doctor(
-      doctorId: "1",
-      name: "Dr. Mamun Mostafi",
-      specialty: "Cardiologist",
-      hospital: "Dhaka Medical Hospital",
-
-      availability: ["9 AM - 5 PM"],
-      imageUrl: "assets/images/user_placeholder.png",
+      doctorId: '1',
+      name: 'Dr. Tanvir Hossain',
+      specialty: 'Cardiology',
+      hospital: 'Square Hospitals Ltd, Dhaka',
+      availability: ['10:00 AM - 1:00 PM'],
+      imageUrl: 'assets/images/ff.jpg',
     ),
     Doctor(
-      doctorId: "2",
-      name: "Dr. Md. Abdul Wahab Khan",
-      specialty: "Neurologist",
-      hospital: "Apollo Hospital",
-
-      availability: ["10 AM-6 PM"],
-      imageUrl: "assets/images/user_placeholder.png",
+      doctorId: '2',
+      name: 'Dr. Sharmin Akter',
+      specialty: 'Gynecology & Obstetrics',
+      hospital: 'Labaid Specialized Hospital, Dhanmondi',
+      availability: ['5:00 PM - 8:00 PM'],
+      imageUrl: 'assets/images/ff.jpg',
     ),
     Doctor(
-      doctorId: "3",
-      name: "Dr. Imtiaz Faruk",
-      specialty: "Orthopedist",
-      hospital: "Square Hospital",
-
-      availability: ["8 AM - 4 PM"],
-      imageUrl: "assets/images/user_placeholder.png",
+      doctorId: '3',
+      name: 'Dr. Mahmudul Islam',
+      specialty: 'Neurology',
+      hospital: 'Evercare Hospital Dhaka',
+      availability: ['9:00 AM - 12:00 PM'],
+      imageUrl: 'assets/images/ff.jpg',
     ),
     Doctor(
-      doctorId: "4",
-      name: "Dr. Md. Sahbub Alam",
-      specialty: "Pediatrician",
-      hospital: "United Hospital",
-
-      availability: ["11 AM - 7 PM"],
-      imageUrl: "assets/images/user_placeholder.png",
+      doctorId: '4',
+      name: 'Dr. Ayesha Siddika',
+      specialty: 'Pediatrics',
+      hospital: 'Dhaka Medical College Hospital',
+      availability: ['4:00 PM - 7:00 PM'],
+      imageUrl: 'assets/images/ff.jpg',
     ),
   ];
 
-  final List<Map<String, dynamic>> _hospitals = [
+  final List<Map<String, String>> _hospitals = [
     {
-      'hospitalId': '1',
-      'name': 'Ibn Sina Specialized Hospital',
-      'imageUrl': 'assets/images/hospital_placeholder.png',
-      'address': '1/A Dhanmondi, Dhaka',
-      'hotline': "09610110110",
-      'email': "info@ibnsinatrust.com",
-    },
-    {
-      'hospitalId': '2',
-      'name': 'United Hospital Limited',
-      'address': 'Plot 15, Road 71, Gulshan, Dhaka',
-      'imageUrl': 'assets/images/hospital_placeholder.png',
-    },
-    {
-      'hospitalId': '3',
       'name': 'Square Hospitals Ltd',
-      'address': '18/F, Bir Uttam Qazi Nuruzzaman Sarak, Dhaka',
-      'imageUrl': 'assets/images/hospital_placeholder.png',
+      'address': 'West Panthapath, Dhaka',
+      'hotline': '10616',
+    },
+    {
+      'name': 'Evercare Hospital Dhaka',
+      'address': 'Bashundhara R/A, Dhaka',
+      'hotline': '10678',
+    },
+    {
+      'name': 'Ibn Sina Specialized Hospital',
+      'address': 'Dhanmondi, Dhaka',
+      'hotline': '10615',
     },
   ];
 
-  List<Doctor> _filteredDoctors = [];
-  List<Map<String, dynamic>> _filteredHospitals = [];
+  late List<Doctor> _filteredDoctors;
+  late List<Map<String, String>> _filteredHospitals;
 
   @override
   void initState() {
@@ -88,237 +77,188 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
     _filteredHospitals = List.from(_hospitals);
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedBottomIndex = index;
-      if (_selectedBottomIndex == 0) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      } else if (_selectedBottomIndex == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const NewsFeedScreen()),
-        );
-      } else if (_selectedBottomIndex == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileScreen()),
-        );
-      }
-    });
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
-  void _onSegmentChanged(int index) {
-    setState(() {
-      _selectedSegment = index;
-    });
-  }
-
-  void _filterDoctors(String query) {
-    setState(() {
-      _filteredDoctors = _doctors
-          .where(
-            (doctor) =>
-                doctor.name.toLowerCase().contains(query.toLowerCase()) ||
-                doctor.specialty.toLowerCase().contains(query.toLowerCase()),
-          )
-          .toList();
-    });
-  }
-
-  void _filterHospitals(String query) {
-    setState(() {
-      _filteredHospitals = _hospitals
-          .where(
-            (hospital) => (hospital['name'] ?? '')
-                .toString()
-                .toLowerCase()
-                .contains(query.toLowerCase()),
-          )
-          .toList();
-    });
+  void _onSearch(String query) {
+    final keyword = query.toLowerCase();
+    if (_selectedSegment == 0) {
+      setState(() {
+        _filteredDoctors = _doctors
+            .where(
+              (d) =>
+                  d.name.toLowerCase().contains(keyword) ||
+                  d.specialty.toLowerCase().contains(keyword) ||
+                  d.hospital.toLowerCase().contains(keyword),
+            )
+            .toList();
+      });
+    } else {
+      setState(() {
+        _filteredHospitals = _hospitals
+            .where(
+              (h) =>
+                  (h['name'] ?? '').toLowerCase().contains(keyword) ||
+                  (h['address'] ?? '').toLowerCase().contains(keyword),
+            )
+            .toList();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: AppBar(
+        title: const Text('Doctor Information'),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          _buildHeroImage(),
-          _buildSearchBar(),
-          _buildSegmentedControl(),
-          Expanded(child: _buildContent()),
-        ],
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: const Text('Information'),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-    );
-  }
-
-  Widget _buildHeroImage() {
-    return Container(
-      height: 250,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/post_placeholder.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          _selectedSegment == 0
-              ? _filterDoctors(value)
-              : _filterHospitals(value);
-        },
-        decoration: InputDecoration(
-          hintText: 'Search Specialist',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSegmentedControl() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _onSegmentChanged(0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: _selectedSegment == 0
-                      ? const Color(0xFF9A75F9)
-                      : Colors.transparent,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [colors.primary, colors.secondary],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              ),
+            ),
+            child: Column(
+              children: [
+                const Text(
+                  'Bangladesh Specialist Directory',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
                   ),
                 ),
-                child: Center(
-                  child: Text(
-                    'Doctor',
-                    style: TextStyle(
-                      color: _selectedSegment == 0
-                          ? Colors.white
-                          : const Color(0xFF9A75F9),
+                const SizedBox(height: 4),
+                const Text(
+                  'Find specialists and hospitals with practical appointment data',
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: _searchController,
+                  onChanged: _onSearch,
+                  decoration: InputDecoration(
+                    hintText: 'Search doctor, specialty or hospital',
+                    prefixIcon: const Icon(Icons.search),
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _onSegmentChanged(1),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: _selectedSegment == 1
-                      ? const Color(0xFF9A75F9)
-                      : Colors.transparent,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    'Hospital',
-                    style: TextStyle(
-                      color: _selectedSegment == 1
-                          ? Colors.white
-                          : const Color(0xFF9A75F9),
-                    ),
-                  ),
-                ),
-              ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SegmentedButton<int>(
+              segments: const [
+                ButtonSegment<int>(value: 0, label: Text('Doctors')),
+                ButtonSegment<int>(value: 1, label: Text('Hospitals')),
+              ],
+              selected: {_selectedSegment},
+              onSelectionChanged: (selection) {
+                setState(() {
+                  _selectedSegment = selection.first;
+                  _searchController.clear();
+                  _filteredDoctors = List.from(_doctors);
+                  _filteredHospitals = List.from(_hospitals);
+                });
+              },
             ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: _selectedSegment == 0 ? _buildDoctors() : _buildHospitals(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildContent() {
-    return _selectedSegment == 0 ? _buildDoctorList() : _buildHospitalList();
-  }
+  Widget _buildDoctors() {
+    if (_filteredDoctors.isEmpty) {
+      return const Center(child: Text('No doctors found for this search.'));
+    }
 
-  Widget _buildDoctorList() {
     return ListView.builder(
+      padding: const EdgeInsets.all(16),
       itemCount: _filteredDoctors.length,
       itemBuilder: (context, index) {
         final doctor = _filteredDoctors[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0D9F9),
-              borderRadius: BorderRadius.circular(15),
-            ),
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundImage:
-                        doctor.imageUrl.isNotEmpty &&
-                            doctor.imageUrl.startsWith('assets/images')
-                        ? AssetImage(doctor.imageUrl)
-                        : const AssetImage(
-                            'assets/images/user_placeholder.png',
-                          ),
-                  ),
+                CircleAvatar(
+                  radius: 34,
+                  backgroundImage: doctor.imageUrl.startsWith('assets/')
+                      ? AssetImage(doctor.imageUrl) as ImageProvider
+                      : NetworkImage(doctor.imageUrl),
                 ),
-
+                const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    doctor.name,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookAppointmentScreen(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        doctor.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF9A75F9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    child: const Text('Mor info'),
+                      Text(
+                        doctor.specialty,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(doctor.hospital),
+                      Text('Chamber: ${doctor.availability.first}'),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: FilledButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const BookAppointmentScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text('Book Appointment'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -329,77 +269,29 @@ class _DoctorInformationScreenState extends State<DoctorInformationScreen> {
     );
   }
 
-  Widget _buildHospitalList() {
+  Widget _buildHospitals() {
+    if (_filteredHospitals.isEmpty) {
+      return const Center(child: Text('No hospitals found for this search.'));
+    }
+
     return ListView.builder(
+      padding: const EdgeInsets.all(16),
       itemCount: _filteredHospitals.length,
       itemBuilder: (context, index) {
         final hospital = _filteredHospitals[index];
-        final hospitalName = hospital['name']?.toString() ?? '';
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0D9F9),
-              borderRadius: BorderRadius.circular(15),
+        return Card(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: ListTile(
+            leading: const CircleAvatar(
+              child: Icon(Icons.local_hospital_outlined),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'assets/images/hospital_placeholder.png',
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    hospitalName,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add more details screen if needed
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF9A75F9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text('Mor info'),
-                  ),
-                ),
-              ],
+            title: Text(hospital['name'] ?? ''),
+            subtitle: Text(
+              '${hospital['address']} | Hotline ${hospital['hotline']}',
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.newspaper_outlined),
-          label: 'News Feed',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Profile',
-        ),
-      ],
-      currentIndex: _selectedBottomIndex,
-      selectedItemColor: const Color(0xFF9A75F9),
-      onTap: _onItemTapped,
     );
   }
 }

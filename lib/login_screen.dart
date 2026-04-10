@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
   @override
   void dispose() {
     _emailController.dispose();
@@ -21,9 +22,10 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginUser() async {
+    setState(() => _isLoading = true);
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
       if (mounted) {
@@ -42,6 +44,8 @@ class LoginScreenState extends State<LoginScreen> {
       _showErrorDialog(errorMessage);
     } catch (e) {
       _showErrorDialog("An error occurred.");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -65,178 +69,163 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
+      body: Stack(
+        children: [
+          Container(
+            height: 320,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [colors.primary, colors.secondary],
+              ),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(40),
+                bottomRight: Radius.circular(40),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 180,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomLeft,
-                        colors: [Color(0xFFD8B4FE), Color(0xFF937DC2)],
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
+                  const Icon(
+                    Icons.local_hospital_rounded,
+                    color: Colors.white,
+                    size: 38,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'MediContact Bangladesh',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  Positioned(
-                    top: 50,
-                    left: 20,
-                    child: ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Colors.white, Colors.white],
-                      ).createShader(bounds),
-                      child: const Text(
-                        'Welcome to',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Sign in to book doctors, diagnostics and hospitals in Bangladesh.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 14,
                     ),
                   ),
-                  Positioned(
-                    top: 85,
-                    left: 20,
-                    child: const Text(
-                      'Medicontact App',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
+                  const SizedBox(height: 28),
+                  Card(
+                    elevation: 8,
+                    shadowColor: colors.shadow.withOpacity(0.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome Back',
+                            style: TextStyle(
+                              color: colors.onSurface,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              labelText: 'Email Address',
+                              prefixIcon: Icon(
+                                Icons.mail_outline,
+                                color: colors.primary,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: colors.primary,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {},
+                              child: const Text('Forgot Password?'),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isLoading ? null : _loginUser,
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text('Sign In'),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('New here? '),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SignUpScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Create Account'),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 40),
-                child: const Text(
-                  "Login",
-                  style: TextStyle(
-                    color: Color(0xFF937DC2),
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10,
-                ),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: "Username",
-                    filled: true,
-                    fillColor: const Color(
-                      0xFFD8B4FE,
-                    ).withAlpha((0.3 * 255).toInt()),
-                    prefixIcon: const Icon(
-                      Icons.person,
-                      color: Color(0xFF937DC2),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    filled: true,
-                    fillColor: const Color(
-                      0xFFD8B4FE,
-                    ).withAlpha((0.3 * 255).toInt()),
-                    prefixIcon: const Icon(
-                      Icons.lock,
-                      color: Color(0xFF937DC2),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, right: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 120, 119, 119),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: ElevatedButton(
-                  onPressed: _loginUser,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD8B4FE),
-                    minimumSize: const Size(double.infinity, 50),
-                    padding: const EdgeInsets.all(10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignUpScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 120, 119, 119),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

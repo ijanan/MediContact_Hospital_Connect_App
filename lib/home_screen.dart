@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:myapp/models/appointment.dart';
 import 'package:myapp/profile_screen.dart';
 import 'package:myapp/news_feed_screen.dart';
@@ -30,9 +29,7 @@ class HomeScreenState extends State<HomeScreen> {
   String get _currentUserLabel =>
       FirebaseAuth.instance.currentUser?.email?.split('@').first ?? 'User';
 
-  static const String _userAvatarAsset = 'assets/images/user_placeholder.png';
-  static const String _animeAvatarUrl =
-      'https://i.pinimg.com/1200x/c1/4d/c6/c14dc680373ab26a0b1683ec2de820cc.jpg'; // Fixed high quality anime avatar
+  static const String _localUserAvatar = 'assets/images/ff.jpg';
 
   Widget _sectionHeader(String title, {IconData? icon}) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -177,8 +174,8 @@ class HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 12),
             Row(
               children: [
-                const CircleAvatar(
-                  backgroundImage: NetworkImage(_animeAvatarUrl),
+                CircleAvatar(
+                  backgroundImage: const AssetImage(_localUserAvatar),
                   radius: 24,
                 ),
                 const SizedBox(width: 14),
@@ -498,7 +495,7 @@ class HomeScreenState extends State<HomeScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: CircleAvatar(
-            backgroundImage: const NetworkImage(_animeAvatarUrl),
+            backgroundImage: const AssetImage(_localUserAvatar),
             backgroundColor: colorScheme.surfaceContainerHighest,
           ),
         ),

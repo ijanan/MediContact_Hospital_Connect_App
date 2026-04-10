@@ -41,7 +41,9 @@ class Appointment {
       'appointmentId': appointmentId,
       'doctorId': doctorId,
       'userId': userId,
-      'date': Timestamp.fromDate(date), // Convert DateTime to Firestore Timestamp
+      'date': Timestamp.fromDate(
+        date,
+      ), // Convert DateTime to Firestore Timestamp
       'time': time,
       'specialty': specialty,
       'hospital': hospital,
@@ -51,7 +53,8 @@ class Appointment {
 
   // From Firestore to create an Appointment object
   factory Appointment.fromFirestore(Map<String, dynamic> firestoreData) {
-    DateTime date = (firestoreData['date'] as Timestamp).toDate(); // Convert Firestore Timestamp to DateTime
+    DateTime date = (firestoreData['date'] as Timestamp)
+        .toDate(); // Convert Firestore Timestamp to DateTime
     return Appointment(
       appointmentId: firestoreData['appointmentId'],
       doctorId: firestoreData['doctorId'],

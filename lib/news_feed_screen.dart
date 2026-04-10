@@ -10,26 +10,31 @@ class NewsFeedScreen extends StatefulWidget {
 }
 
 class NewsFeedScreenState extends State<NewsFeedScreen> {
+  static const String _localAvatar = 'assets/images/ff.jpg';
   int _selectedBottomIndex = 1;
   final List<Map<String, String>> _posts = [
     {
-      'userName': 'Anonymous',
-      'userImageUrl': 'assets/images/user_placeholder.png',
-      'postContent': 'This is a news feed post.',
-      'postImageUrl': 'assets/images/post_placeholder.png',
+      'userName': 'Dr. Tanvir Ahmed',
+      'userImageUrl': _localAvatar,
+      'postContent':
+          'Always remember to stay hydrated during these hot summer days!',
+      'postImageUrl':
+          'https://images.unsplash.com/photo-1511688878353-3a2f5be94cd7?q=80&w=600&fit=crop',
     },
     {
-      'userName': 'Anonymous',
-      'userImageUrl': 'assets/images/user_placeholder.png',
-      'postContent': 'This is a news feed post.',
-      'postImageUrl': 'assets/images/post_placeholder.png',
+      'userName': 'Dr. Sumaiya Rahman',
+      'userImageUrl': _localAvatar,
+      'postContent':
+          'Our new diagnostic center is now open for appointments. Check the diagnostics tab!',
+      'postImageUrl':
+          'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=600&fit=crop',
     },
   ];
 
   void navigateTo(Widget screen) {
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => screen)
+      context,
+      MaterialPageRoute(builder: (context) => screen),
     ).then((_) => setState(() {}));
   }
 
@@ -50,10 +55,10 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
             const Text('News Feeds'),
             InkWell(
               onTap: () {
-                 navigateTo(const ProfileScreen());
+                navigateTo(const ProfileScreen());
               },
               child: const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/user_placeholder.png'),
+                backgroundImage: AssetImage(_localAvatar),
                 radius: 20,
               ),
             ),
@@ -63,10 +68,9 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Padding(
             padding: const EdgeInsets.all(10.0),
-            
+
             child: Row(
               children: [
                 Expanded(
@@ -74,18 +78,24 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
                     decoration: InputDecoration(
                       hintText: 'Whats on your mind?',
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ),
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.camera_alt)),
+                  onPressed: () {},
+                  icon: const Icon(Icons.camera_alt),
+                ),
               ],
             ),
           ),
           const Padding(
             padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-            child: Text('Recently Post', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+            child: Text(
+              'Recently Post',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
           Expanded(
             child: ListView.builder(
@@ -104,15 +114,10 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.feed),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),],
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'News'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
         currentIndex: _selectedBottomIndex,
         onTap: (index) {
           setState(() {
@@ -129,25 +134,29 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
   }
 
   Widget _buildPost(Map<String, String> post) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16.0, left: 10, right: 10),
+      elevation: 3,
+      shadowColor: colorScheme.primary.withAlpha(30),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage(post['userImageUrl']!),
+              backgroundImage: post['userImageUrl']!.startsWith('assets/')
+                  ? AssetImage(post['userImageUrl']!) as ImageProvider
+                  : NetworkImage(post['userImageUrl']!),
               radius: 20,
             ),
-            title: Text(post['userName']!, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              post['userName']!,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             trailing: PopupMenuButton<String>(
-              onSelected: (value) {
-              },
+              onSelected: (value) {},
               itemBuilder: (BuildContext context) {
                 return {'Edit', 'Delete'}.map((String choice) {
                   return PopupMenuItem<String>(
@@ -158,10 +167,55 @@ class NewsFeedScreenState extends State<NewsFeedScreen> {
               },
             ),
           ),
-          Image(image: AssetImage(post['postImageUrl']!),
-            fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
+            child: Text(post['postContent'] ?? ''),
           ),
-          
+          if (post['postImageUrl'] != null && post['postImageUrl']!.isNotEmpty)
+            Image.network(
+              post['postImageUrl']!,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                height: 200,
+                color: colorScheme.surfaceContainerHighest,
+                child: const Center(child: Icon(Icons.broken_image, size: 50)),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.thumb_up_alt_outlined,
+                    color: colorScheme.primary,
+                  ),
+                  label: Text(
+                    'Like',
+                    style: TextStyle(color: colorScheme.primary),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.comment_outlined,
+                    color: colorScheme.primary,
+                  ),
+                  label: Text(
+                    'Comment',
+                    style: TextStyle(color: colorScheme.primary),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

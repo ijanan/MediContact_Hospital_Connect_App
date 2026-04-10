@@ -1,6 +1,6 @@
 // lib/models/doctor.dart
 class Doctor {
-   String? doctorId;
+  String? doctorId;
   final String name;
   final String specialty;
   final String hospital;
@@ -15,7 +15,7 @@ class Doctor {
     required this.availability,
     required this.imageUrl,
   });
-    Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toFirestore() {
     return {
       'doctorId': doctorId,
       'name': name,
@@ -25,15 +25,17 @@ class Doctor {
       'imageUrl': imageUrl,
     };
   }
- factory Doctor.fromFirestore(Map<String, dynamic> firestoreData) {
+
+  factory Doctor.fromFirestore(Map<String, dynamic> firestoreData) {
     return Doctor(
       doctorId: firestoreData['doctorId'],
       name: firestoreData['name'],
       specialty: firestoreData['specialty'],
       hospital: firestoreData['hospital'],
-      availability: firestoreData['availability'] != null ? List<String>.from(firestoreData['availability']) : [],
+      availability: firestoreData['availability'] != null
+          ? List<String>.from(firestoreData['availability'])
+          : [],
       imageUrl: firestoreData['imageUrl'] ?? '',
     );
   }
-
 }

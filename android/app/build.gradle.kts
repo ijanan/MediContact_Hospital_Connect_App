@@ -45,10 +45,10 @@ flutter {
 }
 
 // Workaround: When this project lives under OneDrive, some Flutter build artifacts
-// (like build/.../.last_build_id) may be created as a reparse point (not a regular file).
+// (like build/.../.last_build_id or shaders) may be created as a reparse point.
 // Gradle 8+ then fails while snapshotting task outputs. Disable state tracking for
-// the Flutter build tasks as recommended by Gradle in the error message.
-tasks.matching { it.name.startsWith("compileFlutterBuild") }.configureEach {
+// the Flutter build/asset tasks as recommended by Gradle in the error message.
+tasks.matching { it.name.contains("Flutter") }.configureEach {
     doNotTrackState("OneDrive reparse-point build artifacts are not snapshot-friendly")
 }
 dependencies {

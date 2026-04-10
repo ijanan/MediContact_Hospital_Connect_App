@@ -18,8 +18,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Appointment Booking',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF0288D1), // Bright Medical Blue
+          primary: const Color(0xFF0277BD), // Deep Ocean Blue
+          secondary: const Color(0xFF26A69A), // Refreshing Teal
+          tertiary: const Color(0xFF5C6BC0), // Soft Indigo
+        ),
         useMaterial3: true,
+        textTheme: const TextTheme(titleMedium: TextStyle(letterSpacing: -0.3)),
+        appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
       ),
       initialRoute: '/login',
       routes: {
