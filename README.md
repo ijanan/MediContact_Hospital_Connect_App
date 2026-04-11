@@ -142,12 +142,18 @@ This project is currently private/internal. Add a license file if you plan publi
 
 ## App Screenshots
 
-Below is a clean preview gallery of the current app UI.
+![](Screenshot_2026_0412_002627.jpg)
 
-| Home | Services | News Feed | Profile |
-|---|---|---|---|
-| ![Home Dashboard](Screenshot_2026_0412_003012.jpg) | ![Service Section](Screenshot_2026_0412_002627.jpg) | ![News Feed Screen](Screenshot_2026_0412_002734.jpg) | ![Profile Screen](Screenshot_2026_0412_002815.jpg) |
+![](Screenshot_2026_0412_002734.jpg)
 
-| Doctor Information | Hospitals | Diagnostics | Appointment Booking |
-|---|---|---|---|
-| ![Doctor Information Screen](Screenshot_2026_0412_002835.jpg) | ![Hospitals Screen](Screenshot_2026_0412_002851.jpg) | ![Diagnostics Screen](Screenshot_2026_0412_002917.jpg) | ![Book Appointment Screen](Screenshot_2026_0412_002940.jpg) |
+![](Screenshot_2026_0412_002815.jpg)
+
+![](Screenshot_2026_0412_002835.jpg)
+
+![](Screenshot_2026_0412_002851.jpg)
+
+![](Screenshot_2026_0412_002917.jpg)
+
+![](Screenshot_2026_0412_002940.jpg)
+
+![](Screenshot_2026_0412_003012.jpg)
