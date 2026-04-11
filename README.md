@@ -142,18 +142,22 @@ This project is currently private/internal. Add a license file if you plan publi
 
 ## App Screenshots
 
-![](Screenshot_2026_0412_002627.jpg)
+<p align="center">
+	<img src="Screenshot_2026_0412_003012.jpg" width="260" alt="Home" />
+	<img src="Screenshot_2026_0412_002627.jpg" width="260" alt="Services" />
+</p>
 
-![](Screenshot_2026_0412_002734.jpg)
+<p align="center">
+	<img src="Screenshot_2026_0412_002734.jpg" width="260" alt="News Feed" />
+	<img src="Screenshot_2026_0412_002815.jpg" width="260" alt="Profile" />
+</p>
 
-![](Screenshot_2026_0412_002815.jpg)
+<p align="center">
+	<img src="Screenshot_2026_0412_002835.jpg" width="260" alt="Doctor Information" />
+	<img src="Screenshot_2026_0412_002851.jpg" width="260" alt="Hospitals" />
+</p>
 
-![](Screenshot_2026_0412_002835.jpg)
-
-![](Screenshot_2026_0412_002851.jpg)
-
-![](Screenshot_2026_0412_002917.jpg)
-
-![](Screenshot_2026_0412_002940.jpg)
-
-![](Screenshot_2026_0412_003012.jpg)
+<p align="center">
+	<img src="Screenshot_2026_0412_002917.jpg" width="260" alt="Diagnostics" />
+	<img src="Screenshot_2026_0412_002940.jpg" width="260" alt="Book Appointment" />
+</p>
