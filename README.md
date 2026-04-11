@@ -143,21 +143,19 @@ This project is currently private/internal. Add a license file if you plan publi
 ## App Screenshots
 
 <p align="center">
-	<img src="Screenshot_2026_0412_003012.jpg" width="260" alt="Home" />
-	<img src="Screenshot_2026_0412_002627.jpg" width="260" alt="Services" />
+	<img src="1.jpg" width="240" alt="1" />
+	<img src="2.jpg" width="240" alt="2" />
+	<img src="3.jpg" width="240" alt="3" />
 </p>
 
 <p align="center">
-	<img src="Screenshot_2026_0412_002734.jpg" width="260" alt="News Feed" />
-	<img src="Screenshot_2026_0412_002815.jpg" width="260" alt="Profile" />
+	<img src="4.jpg" width="240" alt="4" />
+	<img src="5.jpg" width="240" alt="5" />
+	<img src="6.jpg" width="240" alt="6" />
 </p>
 
 <p align="center">
-	<img src="Screenshot_2026_0412_002835.jpg" width="260" alt="Doctor Information" />
-	<img src="Screenshot_2026_0412_002851.jpg" width="260" alt="Hospitals" />
-</p>
-
-<p align="center">
-	<img src="Screenshot_2026_0412_002917.jpg" width="260" alt="Diagnostics" />
-	<img src="Screenshot_2026_0412_002940.jpg" width="260" alt="Book Appointment" />
+	<img src="7.jpg" width="240" alt="7" />
+	<img src="8.jpg" width="240" alt="8" />
+	<img src="9.jpg" width="240" alt="9" />
 </p>
